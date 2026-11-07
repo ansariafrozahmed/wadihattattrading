@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: ["192.168.1.105", "192.168.1.99"],
   experimental: {
     agentFeedback: true,
   },
@@ -21,8 +22,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["192.168.1.99"],
-
   turbopack: {
     rules: {
       "*.css": {

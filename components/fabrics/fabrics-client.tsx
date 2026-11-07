@@ -52,7 +52,7 @@ export default function FabricsClient() {
         </Reveal>
 
         {/* Fabrics Grid - Shared Swatch Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 sm:gap-x-8 gap-y-14 sm:gap-y-16">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-3 sm:gap-x-8 gap-y-10 sm:gap-y-16">
           {fabrics.map((fabric, idx) => (
             <Reveal key={fabric.id} delay={idx * 35} variant="up">
               <FabricSwatchCard

@@ -129,6 +129,32 @@ h6,
   transform: translateY(0) translateX(0) scale(1);
 }
 
+/* Drop the compositor hint once the reveal has played. Leaving
+   will-change on keeps a layer (and its texture) alive for every
+   revealed block on the page, which starves heavier things like
+   the fabric carousel of GPU memory. */
+.reveal.reveal-done {
+  will-change: auto;
+}
+
+/* ---- Embla carousel (fabric lines) ---- */
+.embla-viewport {
+  /* Keep the viewport's own paint isolated from the rest of the section. */
+  contain: paint;
+}
+
+.embla-track {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.embla-slide {
+  /* Each slide's layout/style is self-contained, so moving the track can
+     never invalidate layout for its siblings. `paint` is deliberately NOT
+     included: the swatch cards cast shadows outside their box. */
+  contain: layout style;
+}
+
 .reveal[data-reveal-variant="fade"] {
   --reveal-y: 0px;
 }

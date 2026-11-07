@@ -27,21 +27,36 @@ export function Reveal({
     const el = ref.current;
     if (!el) return;
 
+    let doneTimer: ReturnType<typeof setTimeout> | undefined;
+
+    // Once the reveal transition has played, release the `will-change` hint so
+    // the element stops holding its own compositor layer for the rest of the
+    // page's life (see `.reveal-done` in globals.css).
+    const reveal = () => {
+      el.classList.add("is-visible");
+      const revealDuration = duration ?? 850;
+      doneTimer = setTimeout(
+        () => el.classList.add("reveal-done"),
+        delay + revealDuration + 80,
+      );
+    };
+
     // Check if element is already within viewport on initial mount
     const rect = el.getBoundingClientRect();
     const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
 
     if (inViewport) {
-      const timer = setTimeout(() => {
-        el.classList.add("is-visible");
-      }, Math.min(delay, 250));
-      return () => clearTimeout(timer);
+      const timer = setTimeout(reveal, Math.min(delay, 250));
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(doneTimer);
+      };
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.classList.add("is-visible");
+          reveal();
           observer.disconnect();
         }
       },
@@ -49,8 +64,11 @@ export function Reveal({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [delay]);
+    return () => {
+      observer.disconnect();
+      clearTimeout(doneTimer);
+    };
+  }, [delay, duration]);
 
   const style: React.CSSProperties = {
     "--reveal-delay": `${delay}ms`,
